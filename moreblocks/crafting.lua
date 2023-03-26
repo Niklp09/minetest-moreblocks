@@ -1,12 +1,12 @@
 local cm = moreblocks.resources.craft_materials
-
+--[[
 if cm.stick and cm.dry_shrub then
 	minetest.register_craft({
 		output = cm.stick,
 		recipe = { { cm.dry_shrub } },
 	})
 end
-
+]]--
 if cm.stick then
 	minetest.register_craft({
 		output = cm.stick,

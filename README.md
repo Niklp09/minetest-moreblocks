@@ -106,23 +106,23 @@ whitelist mode, run the `/dump_stairsplus_registered_nodes` command to generate 
 which will be used in the next step. generating this file should be quick and painless.
 
 the next step is *not* necessarily quick and painless. you will need to run a provided python script, located at
-`moreblocks/stairsplus/whitelist_generator/pymtdb.py`. this script can only process sqlite and postgres map backends.
+`moreblocks/stairsplus/scripts/create_whitelist.py`. this script can only process sqlite and postgres map backends.
 additionally, this script only works w/ map serialization version 29, introduced with minetest 5.7.0. if you are
-not running 5.7.0, you will have to upgrade and migrate your database. additionally, while the script is fairly
-efficient and makes use of multiple threads, it is still slow. while postgres can handle concurrent access, if your
-server uses a sqlite backend, you will have to shut it down for the duration of the execution of this script.
+not running 5.7.0, you will have to upgrade and migrate your database (`--recompress`). additionally, while the script
+is fairly efficient and makes use of multiple threads, it is still slow, and you will have to shut your server down
+for the duration of the execution of this script, or run it against a backup database.
 
 the script requires several non-standard python modules be installed, listed in
-`moreblocks/stairsplus/whitelist_generator/requirements.txt`.
+`moreblocks/stairsplus/scripts/requirements.txt`.
 
 to run the script against a sqlite database, execute
 ```bash
-python pymtdb.py -s $WORLDPATH/map.sqlite $WORLDPATH/stairsplus_dump.json
+python create_whitelist.py -s $WORLDPATH/map.sqlite $WORLDPATH/stairsplus_dump.json
 ```
 
 for postgres, fill in the correct connection string for your database:
 ```bash
-python pymtdb.py -p "host=127.0.0.1 user=minetest password=pass dbname=minetest" $WORLDPATH/stairsplus_dump.json
+python create_whitelist.py -p "host=127.0.0.1 user=minetest password=pass dbname=minetest" $WORLDPATH/stairsplus_dump.json
 ```
 
 both of these commands will generate `$WORLDPATH/stairsplus.whitelist` if successful. while running, an estimate
@@ -130,6 +130,17 @@ of how much more time is needed for the script to complete will be provided.
 
 notes:
 1. micro_\*_8 variants are always registered, as they are fundamental to the functionality of the mod.
+
+### migrating schemas
+
+stairsplus also comes with a script which can migrate blocks in minetest schemas and worldedit save files to their new
+names in stairsplus. without this, trying to load schemas saved while using old stairsplus may cause a server crash.
+
+first, create the `stairsplus_dump.json` file mentioned in whitelist mode. next, run
+
+```bash
+python translate_schems.py $WORLDPATH/stairsplus_dump.json $WORLDPATH/schems
+```
 
 ## for mod makers
 

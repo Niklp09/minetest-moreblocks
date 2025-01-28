@@ -176,14 +176,16 @@ function api.register_single(node, shape, overrides, meta)
 		end
 	end
 
-	if not silence_group_overrides and not meta.allow_override_groups and overrides.groups then
-		stairsplus.log(
-			"warning",
-			"removing group overrides from %s (was %s, will be %s)",
-			shaped_name,
-			minetest.write_json(overrides.groups),
-			minetest.write_json(def.groups)
-		)
+	if not meta.allow_override_groups and overrides.groups then
+		if not silence_group_overrides then
+			stairsplus.log(
+				"warning",
+				"removing group overrides from %s (was %s, will be %s)",
+				shaped_name,
+				minetest.write_json(overrides.groups),
+				minetest.write_json(def.groups)
+			)
+		end
 		overrides.groups = nil
 	end
 
